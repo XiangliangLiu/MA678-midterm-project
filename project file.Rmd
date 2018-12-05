@@ -3,8 +3,8 @@ title: "Airbnb Mitderm "
 author: "Xiangliang Liu"
 date: "2018å¹?11æ?o?18æ?-?"
 output:
-  pdf_document: default
   html_document: default
+  pdf_document: default
 ---
 ##Abstract
 
@@ -17,7 +17,7 @@ This project will be focusing on the analysis on the relationship betweeen price
 ### Package and data read in
 
 packages
-```{r message=FALSE, warning=FALSE}
+```{r echo=FALSE, message=FALSE, warning=FALSE}
 #install.packages('tinytex')
 library(readr)
 library(ggplot2)
@@ -108,7 +108,7 @@ hist(BostonAirbnb$overall_satisfaction, main = "distribution of overall satisfac
 
 
 Number of room, pricing and average rating with different district:
-```{r}
+```{r echo=FALSE}
 Rating<-sqldf("SELECT overall_satisfaction, COUNT (room_id) FROM BostonAirbnb Group by 1")
 colnames(Rating)<-c("rating","Num_room")
 #create a new dataset called district.
@@ -124,12 +124,12 @@ ggtitle("Number of Airbnb Rooms per District")+ylab("Number of room")+ theme(axi
 ```{r echo=FALSE}
 ggplot(data=district, aes(x=reorder(district,-reviews), y= reviews))+geom_bar(stat = "identity", fill = "sky blue") + ggtitle("Average number of reviews per District")+ylab("Average nmber of reviews") + theme(axis.text.x = element_text(angle = 45, hjust = 1))
 ```
-From this plot, the district Longwood Medical area has the highest number of review (around 78), while Fenway has the lowest average number of reviews in Boston area(around 15)
+*From this plot, the district Longwood Medical area has the highest number of review (around 78), while Fenway has the lowest average number of reviews in Boston area(around 15)*
 ```{r echo=FALSE}
 ggplot(data=district, aes(x=reorder(district,-Avg_rating), y= Avg_rating))+geom_bar(stat = "identity", fill = "sky blue") + ggtitle("Average rating of Airbnb Rooms per District")+ylab("Average rating of room") + theme(axis.text.x = element_text(angle = 45, hjust = 1))
 #
 ```
-As the graph showing below, we can't tell significant diffence of rating among different neighborhoods. But we can see Leather District has highest average rating which is close to 5.So neighborhood of the Airbnb room could be an influence predictor. We might want to include this predictor in the model to see whether rating is a significant for predicting price of rooms.
+*As the graph showing below, we can't tell significant diffence of rating among different neighborhoods. But we can see Leather District has highest average rating which is close to 5.So neighborhood of the Airbnb room could be an influence predictor. We might want to include this predictor in the model to see whether rating is a significant for predicting price of rooms.*
 
 Average rating and price with different room types.
 ```{r}
@@ -137,40 +137,53 @@ room_type <- sqldf("SELECT room_type, count(room_id), Avg(overall_satisfaction),
 colnames(room_type) = c("room_type","Num_room", "Avg_rating","Avg_price")
 ggplot(data = room_type, aes(x= reorder(room_type,-Avg_price),y = Avg_price)) + geom_bar(stat = "identity", fill = "sky blue") + ggtitle("Average price with different room types") + ylab("average price") + theme(axis.text.x = element_text(angle = 45, hjust = 1))
 ```
-From the plot below we can see entire home/Apt have highest average price among all types of room. This result is reasonable because entire home/apt have more space that can serve more people, so the price is higer.
+*From the plot below we can see entire home/Apt have highest average price among all types of room. This result is reasonable because entire home/apt have more space that can serve more people, so the price is higer.*
 ```{r}
-ggplot(data = room_type, aes(x= reorder(room_type,-Avg_rating),y = Avg_rating)) + geom_bar(stat = "identity", fill = "sky blue") + ggtitle("Average rating with different room types") + ylab("Average price") + theme(axis.text.x = element_text(angle = 45, hjust = 1))
+ggplot(data = BostonAirbnb, aes(overall_satisfaction,fill = room_type)) + geom_bar(position  = "fill") + ggtitle("Average rating with different room types") + ylab("Percentage") + theme(axis.text.x = element_text(angle = 90, hjust = 1))
 ```
-* The graph above shows the average rating with different room types. However we can't tell any difference among those three types. This is because the overall rating in Boston area are all very hight(above 4.5).
+*The the plot showing above indicates the proportion of room types in different score of rating. We can tell from the graph that when overall_satisfaction = 1 share room has relatively larger proportion compared situations when rating equal other values. However, we can't tell that "Entire home/apt" have higher proportion than other room type, because we found in previous EDA that The number of entire home/apt is higher than either private room or shared room.*
+
+
+
 
 
 
 The accommodates and bedrooms could be two correlated terms in the model, because the number of bedroom will limit the number of customer served. So the correlation test will be conduted in next step.
 
-
 ```{r}
-cor(BostonAirbnb[,c()] )
 res <- cor.test(BostonAirbnb$accommodates, BostonAirbnb$bedrooms, 
                     method = "pearson")
 res
-# the p-value of this test is 2.2e-16. So it is signifiacant to say those two variables are highly correlated.
+```
+*the p-value of this test is 2.2e-16. So it is signifiacant to say those two variables are highly correlated.*
+
+Before going further, we want to test the distribution of the response variable--price, to test the assumption that it is normal distributed.
+```{r}
+#create a histgram of the distribution of price from 0 to 
+hist(BostonAirbnb1$price, main = "Distribution of room price", xlab = "Price",xlim = c(0,700))
+#since the response varible, price is not normal distributed, we are going to do some transformation on this variable.
+logprice = log(BostonAirbnb$price)
 ```
 
+
 ###modelling:
+
 Model1: Simple linear regression:
 ```{r}
 #model1 simple linear regression:
-model1 = lm(price~ room_type + reviews + overall_satisfaction + accommodates + bedrooms + minstay + factor(neighborhood)-1, data = BostonAirbnb) #We add "-1" to the regression formula to remove the constant term.
+model1 = lm(logprice~ room_type + reviews + overall_satisfaction + accommodates + bedrooms + minstay + factor(neighborhood)-1, data = BostonAirbnb) #We add "-1" to the regression formula to remove the constant term.
 display(model1)
 AIC(model1)
 plot(model1,which = 1)#create a residual plot.
 ```
-From this fundamental model, I found the all of the predictors are significant. Also the R-squre in the model is 0.3, So the model is not well fitted. However, in the residual plot, There are some outlier at point 18772, 2680 and 2487. Those price are very big that lead to huge residuals, we may want to remove those outliers and refit the model.
+From this fundamental model, I found the all of the predictors are significant. Also the R-squre in the model is 0.3, So the model is not well fitted. However, in the residual plot, There are some outlier at point 18772, 2680 and 2487. Those price are very big that lead to huge residuals, we may want to remove those outliers and refit the model.The rest of points are symetrrically distributed around the line h =0.
 
 Model2: Random intercept:
 ```{r}
+
 #get rid of the outlier:
-BostonAirbnb1 = BostonAirbnb[c(-18772, -2680, -2487),]
+BostonAirbnb1 = BostonAirbnb[c(-18772, -2680, -2631),]
+
 #now refit the model:
 model1.1 = lm(price~ room_type + reviews + overall_satisfaction + accommodates + bedrooms + minstay + factor(neighborhood)-1, data = BostonAirbnb1)
 display(model1.1)
@@ -184,7 +197,7 @@ Model3 : Random slope:
 ```{r}
 model3 = lmer(price ~ room_type + reviews + overall_satisfaction + accommodates + bedrooms + (0+ reviews|neighborhood), data = BostonAirbnb1)
 display(model3)
-coefplot_my(model3)
+#coefplot_my(model3)
 
 ```
 model4 : Random slope and random intercept.
@@ -201,5 +214,9 @@ display(model4)
 
 ##Reference
 http://tomslee.net
-##Appendix
 
+##Appendix
+```{r}
+ggplot(data = room_type, aes(x= reorder(room_type,-Avg_rating),y = Avg_rating)) + geom_bar(stat = "identity", fill = "sky blue") + ggtitle("Average rating with different room types") + ylab("average rating") + theme(axis.text.x = element_text(angle = 45, hjust = 1))
+```
+* The graph above shows the average rating with different room types. However we can't tell any difference among those three types. This is because the overall rating in Boston area are all very hight(above 4.5).*
