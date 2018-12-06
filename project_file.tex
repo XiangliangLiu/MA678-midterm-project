@@ -1,0 +1,776 @@
+\documentclass[]{article}
+\usepackage{lmodern}
+\usepackage{amssymb,amsmath}
+\usepackage{ifxetex,ifluatex}
+\usepackage{fixltx2e} % provides \textsubscript
+\ifnum 0\ifxetex 1\fi\ifluatex 1\fi=0 % if pdftex
+  \usepackage[T1]{fontenc}
+  \usepackage[utf8]{inputenc}
+\else % if luatex or xelatex
+  \ifxetex
+    \usepackage{mathspec}
+  \else
+    \usepackage{fontspec}
+  \fi
+  \defaultfontfeatures{Ligatures=TeX,Scale=MatchLowercase}
+\fi
+% use upquote if available, for straight quotes in verbatim environments
+\IfFileExists{upquote.sty}{\usepackage{upquote}}{}
+% use microtype if available
+\IfFileExists{microtype.sty}{%
+\usepackage{microtype}
+\UseMicrotypeSet[protrusion]{basicmath} % disable protrusion for tt fonts
+}{}
+\usepackage[margin=1in]{geometry}
+\usepackage{hyperref}
+\hypersetup{unicode=true,
+            pdftitle={Airbnb Mitderm},
+            pdfauthor={Xiangliang Liu},
+            pdfborder={0 0 0},
+            breaklinks=true}
+\urlstyle{same}  % don't use monospace font for urls
+\usepackage{color}
+\usepackage{fancyvrb}
+\newcommand{\VerbBar}{|}
+\newcommand{\VERB}{\Verb[commandchars=\\\{\}]}
+\DefineVerbatimEnvironment{Highlighting}{Verbatim}{commandchars=\\\{\}}
+% Add ',fontsize=\small' for more characters per line
+\usepackage{framed}
+\definecolor{shadecolor}{RGB}{248,248,248}
+\newenvironment{Shaded}{\begin{snugshade}}{\end{snugshade}}
+\newcommand{\KeywordTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{\textbf{#1}}}
+\newcommand{\DataTypeTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{#1}}
+\newcommand{\DecValTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
+\newcommand{\BaseNTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
+\newcommand{\FloatTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
+\newcommand{\ConstantTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
+\newcommand{\CharTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\SpecialCharTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
+\newcommand{\StringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\VerbatimStringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\SpecialStringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\ImportTok}[1]{#1}
+\newcommand{\CommentTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textit{#1}}}
+\newcommand{\DocumentationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\AnnotationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\CommentVarTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\OtherTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{#1}}
+\newcommand{\FunctionTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
+\newcommand{\VariableTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
+\newcommand{\ControlFlowTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{\textbf{#1}}}
+\newcommand{\OperatorTok}[1]{\textcolor[rgb]{0.81,0.36,0.00}{\textbf{#1}}}
+\newcommand{\BuiltInTok}[1]{#1}
+\newcommand{\ExtensionTok}[1]{#1}
+\newcommand{\PreprocessorTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textit{#1}}}
+\newcommand{\AttributeTok}[1]{\textcolor[rgb]{0.77,0.63,0.00}{#1}}
+\newcommand{\RegionMarkerTok}[1]{#1}
+\newcommand{\InformationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\WarningTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\AlertTok}[1]{\textcolor[rgb]{0.94,0.16,0.16}{#1}}
+\newcommand{\ErrorTok}[1]{\textcolor[rgb]{0.64,0.00,0.00}{\textbf{#1}}}
+\newcommand{\NormalTok}[1]{#1}
+\usepackage{graphicx,grffile}
+\makeatletter
+\def\maxwidth{\ifdim\Gin@nat@width>\linewidth\linewidth\else\Gin@nat@width\fi}
+\def\maxheight{\ifdim\Gin@nat@height>\textheight\textheight\else\Gin@nat@height\fi}
+\makeatother
+% Scale images if necessary, so that they will not overflow the page
+% margins by default, and it is still possible to overwrite the defaults
+% using explicit options in \includegraphics[width, height, ...]{}
+\setkeys{Gin}{width=\maxwidth,height=\maxheight,keepaspectratio}
+\IfFileExists{parskip.sty}{%
+\usepackage{parskip}
+}{% else
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{6pt plus 2pt minus 1pt}
+}
+\setlength{\emergencystretch}{3em}  % prevent overfull lines
+\providecommand{\tightlist}{%
+  \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
+\setcounter{secnumdepth}{0}
+% Redefines (sub)paragraphs to behave more like sections
+\ifx\paragraph\undefined\else
+\let\oldparagraph\paragraph
+\renewcommand{\paragraph}[1]{\oldparagraph{#1}\mbox{}}
+\fi
+\ifx\subparagraph\undefined\else
+\let\oldsubparagraph\subparagraph
+\renewcommand{\subparagraph}[1]{\oldsubparagraph{#1}\mbox{}}
+\fi
+
+%%% Use protect on footnotes to avoid problems with footnotes in titles
+\let\rmarkdownfootnote\footnote%
+\def\footnote{\protect\rmarkdownfootnote}
+
+%%% Change title format to be more compact
+\usepackage{titling}
+
+% Create subtitle command for use in maketitle
+\newcommand{\subtitle}[1]{
+  \posttitle{
+    \begin{center}\large#1\end{center}
+    }
+}
+
+\setlength{\droptitle}{-2em}
+
+  \title{Airbnb Mitderm}
+    \pretitle{\vspace{\droptitle}\centering\huge}
+  \posttitle{\par}
+    \author{Xiangliang Liu}
+    \preauthor{\centering\large\emph}
+  \postauthor{\par}
+    \date{}
+    \predate{}\postdate{}
+  
+\usepackage{booktabs}
+\usepackage{longtable}
+\usepackage{array}
+\usepackage{multirow}
+\usepackage[table]{xcolor}
+\usepackage{wrapfig}
+\usepackage{float}
+\usepackage{colortbl}
+\usepackage{pdflscape}
+\usepackage{tabu}
+\usepackage{threeparttable}
+\usepackage{threeparttablex}
+\usepackage[normalem]{ulem}
+\usepackage{makecell}
+
+\begin{document}
+\maketitle
+
+\subsection{Abstract}\label{abstract}
+
+\subsection{Introduction}\label{introduction}
+
+This project will be focusing on the analysis on the relationship
+betweeen price and rating with other factors on AirBnb website. Airbnb
+is a privately held global company headquartered in San Francisco that
+operates an online marketplace and hospitality service which is
+accessible via its websites and mobile apps. Members can use the service
+to arrange or offer lodging, primarily homestays, or tourism
+experiences. The data was extracted from \url{http://tomslee.net}, which
+can also be extracted from official AirBnb website. Specifically, the
+data was collected from the September 2014 to July 2017 in Boston area.
+The whole project will consist of following parts ``introduction'',
+``Package and data read in'', ``discussion and visualization'',
+``modeling'',``conclusion and summary'', ``reference''. I will fitst
+read in the data and do some visualization to see which predictor will
+contributes more to the prediction of price and rating.And then the
+modeling will be conducting multii-level regression using room type and
+neighborhood as factors to predict price and rating.
+
+\subsubsection{Package and data read in}\label{package-and-data-read-in}
+
+packages
+
+read in data and combine the them to a whole data set
+
+overview of Airbnb data:
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{kable}\NormalTok{(}\KeywordTok{head}\NormalTok{(total))}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{tabular}{r|r|l|l|l|r|r|r|r|r|r|r|r|l|r|l|l|l|l|l}
+\hline
+room\_id & host\_id & room\_type & borough & neighborhood & reviews & overall\_satisfaction & accommodates & bedrooms & price & minstay & latitude & longitude & last\_modified & survey\_id & country & city & bathrooms & name & location\\
+\hline
+5453 & 8021 & Private room & NA & Jamaica Plain & 53 & 5.0 & 2 & 1 & 171 & 1 & 42.32211 & -71.10926 & 2014-09-25 08:33:57 & NA & NA & NA & NA & NA & NA\\
+\hline
+5506 & 8229 & Private room & NA & Roxbury & 30 & 4.5 & 2 & 1 & 165 & 3 & 42.32981 & -71.09560 & 2014-09-25 09:03:21 & NA & NA & NA & NA & NA & NA\\
+\hline
+6695 & 8229 & Entire home/apt & NA & Roxbury & 39 & 5.0 & 4 & 1 & 222 & 3 & 42.32994 & -71.09350 & 2014-09-25 08:14:31 & NA & NA & NA & NA & NA & NA\\
+\hline
+6976 & 16701 & Private room & NA & Roslindale & 26 & 5.0 & 2 & 1 & 74 & 1 & 42.29244 & -71.13577 & 2014-09-25 08:27:09 & NA & NA & NA & NA & NA & NA\\
+\hline
+8789 & 26988 & Entire home/apt & NA & Downtown & 1 & 5.0 & 2 & 1 & 165 & 5 & 42.35919 & -71.06265 & 2014-09-25 08:38:21 & NA & NA & NA & NA & NA & NA\\
+\hline
+8792 & 26988 & Entire home/apt & NA & Downtown & 11 & 4.5 & 3 & 1 & 228 & 5 & 42.35860 & -71.06145 & 2014-09-25 08:39:47 & NA & NA & NA & NA & NA & NA\\
+\hline
+\end{tabular}
+
+\subsection{data cleaning}\label{data-cleaning}
+
+clean the data and specify the variales that will be used in this
+project. Specifically,room id, host id room type, neighborhood, number
+of reviews, overall satisfaction(rating), number of accommodates, number
+of bedrooms and minimum stay for a visit wil be the potential factors to
+influence he rating.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{#specify the column}
+\NormalTok{Airbnb =}\StringTok{ }\NormalTok{total[,}\KeywordTok{c}\NormalTok{(}\DecValTok{1}\OperatorTok{:}\DecValTok{3}\NormalTok{,}\DecValTok{5}\OperatorTok{:}\DecValTok{13}\NormalTok{)]}
+\KeywordTok{summary}\NormalTok{(Airbnb)}\CommentTok{#check the summary of the data:}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##     room_id            host_id           room_type        
+##  Min.   :    3353   Min.   :     4240   Length:76941      
+##  1st Qu.: 4409653   1st Qu.:  5695034   Class :character  
+##  Median : 8227206   Median : 18517776   Mode  :character  
+##  Mean   : 8543440   Mean   : 26142364                     
+##  3rd Qu.:12949309   3rd Qu.: 36128699                     
+##  Max.   :19777573   Max.   :139551362                     
+##                     NA's   :6                             
+##  neighborhood          reviews       overall_satisfaction  accommodates   
+##  Length:76941       Min.   :  0.00   Min.   :0.000        Min.   : 1.000  
+##  Class :character   1st Qu.:  1.00   1st Qu.:4.000        1st Qu.: 2.000  
+##  Mode  :character   Median :  5.00   Median :4.500        Median : 2.000  
+##                     Mean   : 18.95   Mean   :3.836        Mean   : 3.034  
+##                     3rd Qu.: 20.00   3rd Qu.:5.000        3rd Qu.: 4.000  
+##                     Max.   :470.00   Max.   :5.000        Max.   :16.000  
+##                                      NA's   :15510        NA's   :2339    
+##     bedrooms         price            minstay          latitude    
+##  Min.   : 0.00   Min.   :    0.0   Min.   :  1.00   Min.   :42.24  
+##  1st Qu.: 1.00   1st Qu.:   82.0   1st Qu.:  1.00   1st Qu.:42.33  
+##  Median : 1.00   Median :  140.0   Median :  2.00   Median :42.35  
+##  Mean   : 1.27   Mean   :  173.6   Mean   :  2.68   Mean   :42.34  
+##  3rd Qu.: 2.00   3rd Qu.:  218.0   3rd Qu.:  3.00   3rd Qu.:42.35  
+##  Max.   :10.00   Max.   :10000.0   Max.   :365.00   Max.   :42.39  
+##  NA's   :5018                      NA's   :32314                   
+##    longitude     
+##  Min.   :-71.17  
+##  1st Qu.:-71.10  
+##  Median :-71.08  
+##  Mean   :-71.08  
+##  3rd Qu.:-71.06  
+##  Max.   :-70.99  
+## 
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{#According to the summary we can see there are some missing values in the column of host_id, overvall_statisfaction, accommodates, bedrooms and minstay.}
+\NormalTok{BostonAirbnb =}\StringTok{ }\KeywordTok{na.omit}\NormalTok{(Airbnb)}\CommentTok{#eliminate all the NA value.}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{#filter the data with 0 reviews, and 0 price. the observation is meaningless if it has 0 value in number of reviews and price}
+\NormalTok{BostonAirbnb <-}\StringTok{ }\NormalTok{BostonAirbnb }\OperatorTok{%>%}
+\StringTok{  }\KeywordTok{filter}\NormalTok{(BostonAirbnb}\OperatorTok{$}\NormalTok{reviews }\OperatorTok{>}\StringTok{ }\DecValTok{0}\NormalTok{)}\OperatorTok{%>%}
+\StringTok{  }\KeywordTok{filter}\NormalTok{(BostonAirbnb}\OperatorTok{$}\NormalTok{price }\OperatorTok{>}\StringTok{ }\DecValTok{0}\NormalTok{)}
+\NormalTok{BostonAirbnb}\OperatorTok{$}\NormalTok{room_id =}\StringTok{ }\KeywordTok{as.character}\NormalTok{(BostonAirbnb}\OperatorTok{$}\NormalTok{room_id)}
+\NormalTok{BostonAirbnb}\OperatorTok{$}\NormalTok{host_id =}\StringTok{ }\KeywordTok{as.character}\NormalTok{(BostonAirbnb}\OperatorTok{$}\NormalTok{host_id)}
+\KeywordTok{length}\NormalTok{(BostonAirbnb}\OperatorTok{$}\NormalTok{price)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## [1] 25513
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{# the size of cleaned observation is 25513}
+\KeywordTok{summary}\NormalTok{(BostonAirbnb)}\CommentTok{#Now check the summary of data, There's no missing value in the data and the range of data is reasonable.}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##    room_id            host_id           room_type        
+##  Length:25513       Length:25513       Length:25513      
+##  Class :character   Class :character   Class :character  
+##  Mode  :character   Mode  :character   Mode  :character  
+##                                                          
+##                                                          
+##                                                          
+##  neighborhood          reviews       overall_satisfaction  accommodates   
+##  Length:25513       Min.   :  1.00   Min.   :1.000        Min.   : 1.000  
+##  Class :character   1st Qu.:  5.00   1st Qu.:4.500        1st Qu.: 2.000  
+##  Mode  :character   Median : 11.00   Median :4.500        Median : 2.000  
+##                     Mean   : 24.92   Mean   :4.646        Mean   : 2.856  
+##                     3rd Qu.: 29.00   3rd Qu.:5.000        3rd Qu.: 4.000  
+##                     Max.   :375.00   Max.   :5.000        Max.   :16.000  
+##     bedrooms          price            minstay           latitude    
+##  Min.   : 0.000   Min.   :   10.0   Min.   :  1.000   Min.   :42.24  
+##  1st Qu.: 1.000   1st Qu.:   85.0   1st Qu.:  1.000   1st Qu.:42.33  
+##  Median : 1.000   Median :  135.0   Median :  2.000   Median :42.34  
+##  Mean   : 1.176   Mean   :  161.4   Mean   :  2.428   Mean   :42.34  
+##  3rd Qu.: 1.000   3rd Qu.:  200.0   3rd Qu.:  3.000   3rd Qu.:42.36  
+##  Max.   :10.000   Max.   :10000.0   Max.   :300.000   Max.   :42.39  
+##    longitude     
+##  Min.   :-71.17  
+##  1st Qu.:-71.10  
+##  Median :-71.08  
+##  Mean   :-71.08  
+##  3rd Qu.:-71.06  
+##  Max.   :-70.99
+\end{verbatim}
+
+\subsection{Method}\label{method}
+
+\subsubsection{discussion and
+visualization:}\label{discussion-and-visualization}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{#catagorical data:}
+\KeywordTok{kable}\NormalTok{(}\KeywordTok{table}\NormalTok{(BostonAirbnb}\OperatorTok{$}\NormalTok{room_type))}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{tabular}{l|r}
+\hline
+Var1 & Freq\\
+\hline
+Entire home/apt & 14246\\
+\hline
+Private room & 10706\\
+\hline
+Shared room & 561\\
+\hline
+\end{tabular}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{kable}\NormalTok{(}\KeywordTok{table}\NormalTok{(BostonAirbnb}\OperatorTok{$}\NormalTok{neighborhood))}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{tabular}{l|r}
+\hline
+Var1 & Freq\\
+\hline
+Allston & 1452\\
+\hline
+Back Bay & 2089\\
+\hline
+Bay Village & 138\\
+\hline
+Beacon Hill & 1717\\
+\hline
+Brighton & 1317\\
+\hline
+Charlestown & 576\\
+\hline
+Chinatown & 295\\
+\hline
+Dorchester & 2032\\
+\hline
+Downtown & 1221\\
+\hline
+East Boston & 1221\\
+\hline
+Fenway & 1746\\
+\hline
+Hyde Park & 170\\
+\hline
+Jamaica Plain & 2888\\
+\hline
+Leather District & 57\\
+\hline
+Longwood Medical Area & 38\\
+\hline
+Mattapan & 172\\
+\hline
+Mission Hill & 586\\
+\hline
+North End & 1201\\
+\hline
+Roslindale & 572\\
+\hline
+Roxbury & 1236\\
+\hline
+South Boston & 1263\\
+\hline
+South Boston Waterfront & 362\\
+\hline
+South End & 2586\\
+\hline
+West End & 339\\
+\hline
+West Roxbury & 239\\
+\hline
+\end{tabular}
+
+Distribution of number of reviews
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{hist}\NormalTok{(BostonAirbnb}\OperatorTok{$}\NormalTok{reviews, }\DataTypeTok{main =} \StringTok{"distribution of number of reviews"}\NormalTok{, }\DataTypeTok{xlab =} \StringTok{"number of review"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{project_file_files/figure-latex/unnamed-chunk-7-1.pdf}
+\emph{as we can see from the distribution plot of number of reviews,
+most of airbnb hosts have less than 100 reviews.}
+
+Distibution of overall satisfaction:
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{ggplot}\NormalTok{(BostonAirbnb,}\KeywordTok{aes}\NormalTok{(overall_satisfaction))}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{project_file_files/figure-latex/unnamed-chunk-8-1.pdf}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{hist}\NormalTok{(BostonAirbnb}\OperatorTok{$}\NormalTok{overall_satisfaction, }\DataTypeTok{main =} \StringTok{"distribution of overall satisfaction"}\NormalTok{, }\DataTypeTok{xlab =} \StringTok{"overall_satisfaction"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{project_file_files/figure-latex/unnamed-chunk-8-2.pdf}
+\emph{in th histgram plot, most of overall rating is aroud 4.5 and 5.
+There are also a small portion of people rate the room 4 star. Overall,
+customers are satisfied with most of rooms in boston area}
+
+Number of room, pricing and average rating with different district:
+\includegraphics{project_file_files/figure-latex/unnamed-chunk-9-1.pdf}
+
+\includegraphics{project_file_files/figure-latex/unnamed-chunk-10-1.pdf}
+\emph{From this plot, the district Longwood Medical area has the highest
+number of review (around 78), while Fenway has the lowest average number
+of reviews in Boston area(around 15). So the average number of review do
+varys a lot by district.}
+\includegraphics{project_file_files/figure-latex/unnamed-chunk-11-1.pdf}
+\emph{As the graph showing below, we can't tell significant diffence of
+rating among different neighborhoods. But we can see Leather District
+has highest average rating which is close to 5.So neighborhood of the
+Airbnb room could be an influence predictor. We might want to include
+this predictor in the model to see whether rating is a significant for
+predicting price of rooms.}
+
+Average rating and price with different room types.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{room_type <-}\StringTok{ }\KeywordTok{sqldf}\NormalTok{(}\StringTok{"SELECT room_type, count(room_id), Avg(overall_satisfaction), avg(price) FROM BostonAirbnb Group by 1"}\NormalTok{)}
+\KeywordTok{colnames}\NormalTok{(room_type) =}\StringTok{ }\KeywordTok{c}\NormalTok{(}\StringTok{"room_type"}\NormalTok{,}\StringTok{"Num_room"}\NormalTok{, }\StringTok{"Avg_rating"}\NormalTok{,}\StringTok{"Avg_price"}\NormalTok{)}
+\KeywordTok{ggplot}\NormalTok{(}\DataTypeTok{data =}\NormalTok{ room_type, }\KeywordTok{aes}\NormalTok{(}\DataTypeTok{x=} \KeywordTok{reorder}\NormalTok{(room_type,}\OperatorTok{-}\NormalTok{Avg_price),}\DataTypeTok{y =}\NormalTok{ Avg_price)) }\OperatorTok{+}\StringTok{ }\KeywordTok{geom_bar}\NormalTok{(}\DataTypeTok{stat =} \StringTok{"identity"}\NormalTok{, }\DataTypeTok{fill =} \StringTok{"sky blue"}\NormalTok{) }\OperatorTok{+}\StringTok{ }\KeywordTok{ggtitle}\NormalTok{(}\StringTok{"Average price with different room types"}\NormalTok{) }\OperatorTok{+}\StringTok{ }\KeywordTok{ylab}\NormalTok{(}\StringTok{"average price"}\NormalTok{) }\OperatorTok{+}\StringTok{ }\KeywordTok{theme}\NormalTok{(}\DataTypeTok{axis.text.x =} \KeywordTok{element_text}\NormalTok{(}\DataTypeTok{angle =} \DecValTok{45}\NormalTok{, }\DataTypeTok{hjust =} \DecValTok{1}\NormalTok{))}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{project_file_files/figure-latex/unnamed-chunk-12-1.pdf}
+\emph{From the plot below we can see entire home/Apt have highest
+average price among all types of room. This result is reasonable because
+entire home/apt have more space that can serve more people, so the price
+is higer.}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{ggplot}\NormalTok{(}\DataTypeTok{data =}\NormalTok{ BostonAirbnb, }\KeywordTok{aes}\NormalTok{(overall_satisfaction,}\DataTypeTok{fill =}\NormalTok{ room_type)) }\OperatorTok{+}\StringTok{ }\KeywordTok{geom_bar}\NormalTok{(}\DataTypeTok{position  =} \StringTok{"fill"}\NormalTok{) }\OperatorTok{+}\StringTok{ }\KeywordTok{ggtitle}\NormalTok{(}\StringTok{"Average rating with different room types"}\NormalTok{) }\OperatorTok{+}\StringTok{ }\KeywordTok{ylab}\NormalTok{(}\StringTok{"Percentage"}\NormalTok{) }\OperatorTok{+}\StringTok{ }\KeywordTok{theme}\NormalTok{(}\DataTypeTok{axis.text.x =} \KeywordTok{element_text}\NormalTok{(}\DataTypeTok{angle =} \DecValTok{90}\NormalTok{, }\DataTypeTok{hjust =} \DecValTok{1}\NormalTok{))}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{project_file_files/figure-latex/unnamed-chunk-13-1.pdf}
+\emph{The the plot showing above indicates the proportion of room types
+in different score of rating. We can tell from the graph that when
+overall\_satisfaction = 1 share room has relatively larger proportion
+compared situations when rating equal other values. However, we can't
+tell that ``Entire home/apt'' have higher proportion than other room
+type, because we found in previous EDA that The number of entire
+home/apt is higher than either private room or shared room.}
+
+The accommodates and bedrooms could be two correlated terms in the
+model, because the number of bedroom will limit the number of customer
+served. So the correlation test will be conduted in next step.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{res <-}\StringTok{ }\KeywordTok{cor.test}\NormalTok{(BostonAirbnb}\OperatorTok{$}\NormalTok{accommodates, BostonAirbnb}\OperatorTok{$}\NormalTok{bedrooms, }
+                    \DataTypeTok{method =} \StringTok{"pearson"}\NormalTok{)}
+\NormalTok{res}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## 
+##  Pearson's product-moment correlation
+## 
+## data:  BostonAirbnb$accommodates and BostonAirbnb$bedrooms
+## t = 150.06, df = 25511, p-value < 2.2e-16
+## alternative hypothesis: true correlation is not equal to 0
+## 95 percent confidence interval:
+##  0.6781395 0.6911761
+## sample estimates:
+##       cor 
+## 0.6847126
+\end{verbatim}
+
+\emph{the p-value of this test is 2.2e-16. So it is signifiacant to say
+those two variables are highly correlated.}
+
+Before going further, we want to test the distribution of the response
+variable--price, to test the assumption that it is normal distributed.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{#create a histgram of the distribution of price from 0 to 700, since this range will be the morjority of price fall in. }
+\KeywordTok{hist}\NormalTok{(BostonAirbnb}\OperatorTok{$}\NormalTok{price, }\DataTypeTok{main =} \StringTok{"Distribution of room price"}\NormalTok{, }\DataTypeTok{xlab =} \StringTok{"Price"}\NormalTok{,}\DataTypeTok{breaks =} \DecValTok{100}\NormalTok{,}\DataTypeTok{xlim =} \KeywordTok{c}\NormalTok{(}\DecValTok{0}\NormalTok{,}\DecValTok{700}\NormalTok{))}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{project_file_files/figure-latex/unnamed-chunk-15-1.pdf}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{#since the response varible, price is not normal distributed, we are going to do log transformation on this variable.}
+\NormalTok{df <-}\StringTok{ }\NormalTok{BostonAirbnb}\OperatorTok{%>%}
+\StringTok{  }\KeywordTok{mutate}\NormalTok{(}\DataTypeTok{logprice =} \KeywordTok{log}\NormalTok{(price))}
+\KeywordTok{hist}\NormalTok{(}\KeywordTok{log}\NormalTok{(BostonAirbnb}\OperatorTok{$}\NormalTok{price), }\DataTypeTok{main =} \StringTok{"Distribution of room price"}\NormalTok{, }\DataTypeTok{xlab =} \StringTok{"Price"}\NormalTok{, }\DataTypeTok{breaks =} \DecValTok{40}\NormalTok{,}\DataTypeTok{xlim =} \KeywordTok{c}\NormalTok{(}\DecValTok{2}\NormalTok{,}\DecValTok{8}\NormalTok{))}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{project_file_files/figure-latex/unnamed-chunk-15-2.pdf}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{#The distribution  }
+\end{Highlighting}
+\end{Shaded}
+
+\subsubsection{modelling:}\label{modelling}
+
+Model1: Simple linear regression: log(price) = \alpha + \beta\emph{1*
+x}\{room\_type\} +\beta\emph{2* x}\{reviews\} + \beta\emph{3*
+x}\{reviews\} +\beta\_4\emph{x\_\{accommodates}bedrooms\} +
+\beta\emph{5* x}\{accommodates\}+\beta\emph{6* x}\{bedrooms\}
++\beta\emph{7* x}\{minstay\}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{#model1 simple linear regression:}
+\NormalTok{model1 =}\StringTok{ }\KeywordTok{lm}\NormalTok{(logprice}\OperatorTok{~}\StringTok{ }\NormalTok{room_type }\OperatorTok{+}\StringTok{ }\NormalTok{reviews }\OperatorTok{+}\StringTok{ }\NormalTok{overall_satisfaction }\OperatorTok{+}\StringTok{ }\NormalTok{accommodates}\OperatorTok{*}\NormalTok{bedrooms }\OperatorTok{+}\StringTok{ }\NormalTok{minstay , }\DataTypeTok{data =}\NormalTok{ df) }\CommentTok{#We add "-1" to the regression formula to remove the constant term.}
+\KeywordTok{summary}\NormalTok{(model1)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## 
+## Call:
+## lm(formula = logprice ~ room_type + reviews + overall_satisfaction + 
+##     accommodates * bedrooms + minstay, data = df)
+## 
+## Residuals:
+##     Min      1Q  Median      3Q     Max 
+## -2.7851 -0.2499 -0.0045  0.2530  4.0263 
+## 
+## Coefficients:
+##                         Estimate Std. Error  t value Pr(>|t|)    
+## (Intercept)            4.444e+00  2.842e-02  156.360  < 2e-16 ***
+## room_typePrivate room -6.847e-01  5.937e-03 -115.328  < 2e-16 ***
+## room_typeShared room  -8.783e-01  1.730e-02  -50.770  < 2e-16 ***
+## reviews               -1.151e-03  6.851e-05  -16.793  < 2e-16 ***
+## overall_satisfaction   8.935e-02  5.585e-03   15.998  < 2e-16 ***
+## accommodates           7.205e-02  3.626e-03   19.871  < 2e-16 ***
+## bedrooms               1.829e-01  7.785e-03   23.494  < 2e-16 ***
+## minstay               -1.986e-03  4.103e-04   -4.840 1.30e-06 ***
+## accommodates:bedrooms -9.405e-03  1.408e-03   -6.681 2.42e-11 ***
+## ---
+## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+## 
+## Residual standard error: 0.3904 on 25504 degrees of freedom
+## Multiple R-squared:  0.5709, Adjusted R-squared:  0.5707 
+## F-statistic:  4241 on 8 and 25504 DF,  p-value: < 2.2e-16
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{coefplot}\NormalTok{(model1)}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{project_file_files/figure-latex/unnamed-chunk-16-1.pdf}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{AIC}\NormalTok{(model1)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## [1] 24425.16
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{plot}\NormalTok{(model1,}\DataTypeTok{which =}\DecValTok{1}\NormalTok{)}\CommentTok{#create a residual plot.}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{project_file_files/figure-latex/unnamed-chunk-16-2.pdf}
+\emph{From this simple linear regression, I found the all of the
+predictors are significant. Also the R-squre in the model is 0.3, So the
+model is not well fitted. However, in the residual plot, There are some
+points having big residual: 18772, 2680 and 2631. Those price are very
+high that lead to huge residuals.The rest of points are symetrrically
+distributed around the line h = 0. In the qq-plot, we can see most dots
+in the middle falls on the line. However, the data have more extreme
+values on the tail of the distribution. So the model overestimates the
+low values and underestimate the high values.}
+
+Model2: Random intercept:
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{model2 =}\StringTok{ }\KeywordTok{lmer}\NormalTok{(logprice }\OperatorTok{~}\StringTok{ }\NormalTok{room_type }\OperatorTok{+}\StringTok{ }\NormalTok{reviews }\OperatorTok{+}\StringTok{ }\NormalTok{overall_satisfaction }\OperatorTok{+}\StringTok{ }\NormalTok{accommodates}\OperatorTok{*}\NormalTok{bedrooms }\OperatorTok{+}\StringTok{ }\NormalTok{(}\DecValTok{1}\OperatorTok{|}\NormalTok{neighborhood), }\DataTypeTok{data =}\NormalTok{ df)}
+\KeywordTok{display}\NormalTok{(model2)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## lmer(formula = logprice ~ room_type + reviews + overall_satisfaction + 
+##     accommodates * bedrooms + (1 | neighborhood), data = df)
+##                       coef.est coef.se
+## (Intercept)            4.28     0.06  
+## room_typePrivate room -0.44     0.01  
+## room_typeShared room  -0.77     0.01  
+## reviews                0.00     0.00  
+## overall_satisfaction   0.08     0.00  
+## accommodates           0.07     0.00  
+## bedrooms               0.23     0.01  
+## accommodates:bedrooms -0.01     0.00  
+## 
+## Error terms:
+##  Groups       Name        Std.Dev.
+##  neighborhood (Intercept) 0.28    
+##  Residual                 0.33    
+## ---
+## number of obs: 25513, groups: neighborhood, 25
+## AIC = 16399.6, DIC = 16224.5
+## deviance = 16302.1
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{coefplot}\NormalTok{(model2)}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{project_file_files/figure-latex/unnamed-chunk-17-1.pdf}
+
+Model3 : Random slope:
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{model3 =}\StringTok{ }\KeywordTok{lmer}\NormalTok{(logprice }\OperatorTok{~}\StringTok{ }\NormalTok{room_type }\OperatorTok{+}\StringTok{ }\NormalTok{reviews }\OperatorTok{+}\StringTok{ }\NormalTok{overall_satisfaction }\OperatorTok{+}\StringTok{ }\NormalTok{accommodates}\OperatorTok{*}\NormalTok{bedrooms }\OperatorTok{+}\StringTok{ }\NormalTok{(}\DecValTok{0}\OperatorTok{+}\StringTok{ }\NormalTok{reviews}\OperatorTok{|}\NormalTok{neighborhood), }\DataTypeTok{data =}\NormalTok{ df)}
+\KeywordTok{display}\NormalTok{(model3)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## lmer(formula = logprice ~ room_type + reviews + overall_satisfaction + 
+##     accommodates * bedrooms + (0 + reviews | neighborhood), data = df)
+##                       coef.est coef.se
+## (Intercept)            4.33     0.03  
+## room_typePrivate room -0.62     0.01  
+## room_typeShared room  -0.85     0.02  
+## reviews                0.00     0.00  
+## overall_satisfaction   0.10     0.01  
+## accommodates           0.08     0.00  
+## bedrooms               0.19     0.01  
+## accommodates:bedrooms -0.01     0.00  
+## 
+## Error terms:
+##  Groups       Name    Std.Dev.
+##  neighborhood reviews 0.00    
+##  Residual             0.38    
+## ---
+## number of obs: 25513, groups: neighborhood, 25
+## AIC = 22571.1, DIC = 22397.9
+## deviance = 22474.5
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{coefplot}\NormalTok{(model3)}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{project_file_files/figure-latex/unnamed-chunk-18-1.pdf}
+model4 : Random slope and random intercept.
+
+\begin{verbatim}
+## Warning in checkConv(attr(opt, "derivs"), opt$par, ctrl = control$checkConv, : Model is nearly unidentifiable: very large eigenvalue
+##  - Rescale variables?
+\end{verbatim}
+
+\begin{verbatim}
+## lmer(formula = logprice ~ scale(reviews, center = TRUE, scale = TRUE) + 
+##     scale(overall_satisfaction) + (1 | neighborhood) + (0 + reviews | 
+##     neighborhood), data = df)
+##                                             coef.est coef.se
+## (Intercept)                                  4.90     0.08  
+## scale(reviews, center = TRUE, scale = TRUE) -0.09     0.02  
+## scale(overall_satisfaction)                  0.05     0.00  
+## 
+## Error terms:
+##  Groups         Name        Std.Dev.
+##  neighborhood   (Intercept) 0.40    
+##  neighborhood.1 reviews     0.00    
+##  Residual                   0.48    
+## ---
+## number of obs: 25513, groups: neighborhood, 25
+## AIC = 35387, DIC = 35336.5
+## deviance = 35355.7
+\end{verbatim}
+
+anova test:
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{anova}\NormalTok{(model2, model3, model4, }\DataTypeTok{refit =} \OtherTok{FALSE}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## Data: df
+## Models:
+## model4: logprice ~ scale(reviews, center = TRUE, scale = TRUE) + scale(overall_satisfaction) + 
+## model4:     (1 | neighborhood) + (0 + reviews | neighborhood)
+## model2: logprice ~ room_type + reviews + overall_satisfaction + accommodates * 
+## model2:     bedrooms + (1 | neighborhood)
+## model3: logprice ~ room_type + reviews + overall_satisfaction + accommodates * 
+## model3:     bedrooms + (0 + reviews | neighborhood)
+##        Df   AIC   BIC   logLik deviance Chisq Chi Df Pr(>Chisq)    
+## model4  6 35387 35436 -17687.5    35375                            
+## model2 10 16400 16481  -8189.8    16380 18995      4     <2e-16 ***
+## model3 10 22571 22653 -11275.6    22551     0      0          1    
+## ---
+## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+\end{verbatim}
+
+\subsection{Result:}\label{result}
+
+\subsection{Discussion:}\label{discussion}
+
+\subsection{Reference}\label{reference}
+
+\url{http://tomslee.net}
+
+\subsection{Appendix}\label{appendix}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{ggplot}\NormalTok{(}\DataTypeTok{data =}\NormalTok{ room_type, }\KeywordTok{aes}\NormalTok{(}\DataTypeTok{x=} \KeywordTok{reorder}\NormalTok{(room_type,}\OperatorTok{-}\NormalTok{Avg_rating),}\DataTypeTok{y =}\NormalTok{ Avg_rating)) }\OperatorTok{+}\StringTok{ }\KeywordTok{geom_bar}\NormalTok{(}\DataTypeTok{stat =} \StringTok{"identity"}\NormalTok{, }\DataTypeTok{fill =} \StringTok{"sky blue"}\NormalTok{) }\OperatorTok{+}\StringTok{ }\KeywordTok{ggtitle}\NormalTok{(}\StringTok{"Average rating with different room types"}\NormalTok{) }\OperatorTok{+}\StringTok{ }\KeywordTok{ylab}\NormalTok{(}\StringTok{"average rating"}\NormalTok{) }\OperatorTok{+}\StringTok{ }\KeywordTok{theme}\NormalTok{(}\DataTypeTok{axis.text.x =} \KeywordTok{element_text}\NormalTok{(}\DataTypeTok{angle =} \DecValTok{45}\NormalTok{, }\DataTypeTok{hjust =} \DecValTok{1}\NormalTok{))}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{project_file_files/figure-latex/unnamed-chunk-21-1.pdf}
+* The graph above shows the average rating with different room types.
+However we can't tell any difference among those three types. This is
+because the overall rating in Boston area are all very hight(above
+4.5).*
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{ggplot}\NormalTok{(}\DataTypeTok{data=}\NormalTok{district, }\KeywordTok{aes}\NormalTok{(}\DataTypeTok{x=}\KeywordTok{reorder}\NormalTok{(district,}\OperatorTok{-}\NormalTok{Avg_price), }\DataTypeTok{y=}\NormalTok{Avg_price))}\OperatorTok{+}\KeywordTok{geom_bar}\NormalTok{(}\DataTypeTok{stat =} \StringTok{"identity"}\NormalTok{, }\DataTypeTok{fill =} \StringTok{"sky blue"}\NormalTok{)}\OperatorTok{+}
+\KeywordTok{ggtitle}\NormalTok{(}\StringTok{"Number of Airbnb Rooms per District"}\NormalTok{)}\OperatorTok{+}\KeywordTok{ylab}\NormalTok{(}\StringTok{"Number of room"}\NormalTok{)}\OperatorTok{+}\StringTok{ }\KeywordTok{theme}\NormalTok{(}\DataTypeTok{axis.text.x =} \KeywordTok{element_text}\NormalTok{(}\DataTypeTok{angle =} \DecValTok{45}\NormalTok{, }\DataTypeTok{hjust =} \DecValTok{1}\NormalTok{))}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{project_file_files/figure-latex/unnamed-chunk-22-1.pdf}
+
+
+\end{document}
