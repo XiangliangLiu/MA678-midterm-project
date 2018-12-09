@@ -4,8 +4,7 @@ author: "Xiangliang Liu"
 date: "12/8/2018"
 output:
   pdf_document: default
-  html_document:
-    df_print: paged
+  
 ---
 ##I. Abstract
 Nowadays, as the development of tourism, more and more people are willing to spend money traveling around the world. Airbnb is one of the good choices for travelers to find appropriate accommodation to meet different requirements. This report will mainly focus on predicting the price of different rooms on the Airbnb website. Specifically, the report will do analysis on Airbnb data with two method: EDA(Exploratory Data Analysis) and modeling. After reading this report, you will have a general idea how to predict the price of rooms on Airbnb website and what's the most influential factor in predicting process.
@@ -63,7 +62,7 @@ total = dplyr::bind_rows(data1,data2,data3, data4, data5, data6, data7, data8, d
 ####overview of Airbnb data:
 Table 1. The head of the data:
 ```{r}
-kable(head(total[,c(1:3,5:13)]))
+kable(head(total[,c(1:3,5:7)]))
 ```
 
 
@@ -72,7 +71,7 @@ Table 2. features of the dataset:
 ```{r echo=FALSE}
 #Data cleaning
 #specify the column
-Airbnb = total[,c(1:3,5:7)]
+Airbnb = total[,c(1:3,5:13)]
 summary(Airbnb)#check the summary of the data:
 BostonAirbnb = na.omit(Airbnb)#eliminate all the NA value.
 ```
@@ -108,10 +107,12 @@ hist(BostonAirbnb$reviews, main = "Fig 1.distribution of number of reviews", xla
 
 *as we can see from the distribution plot of number of reviews, most of airbnb hosts have less than 100 reviews.*
 
-Distribution of overall satisfaction:
+*Distribution of overall satisfaction:*
+
 ```{r echo=FALSE}
 hist(BostonAirbnb$overall_satisfaction, main = "Fig 2.distribution of overall satisfaction", xlab = "overall_satisfaction")
 ```
+
 *in th histgram plot, most of overall rating is aroud 4.5 and 5. There are also a small portion of people rate the room 4 star. Overall, customers are satisfied with most of rooms in boston area*
 
 
@@ -149,20 +150,23 @@ ggplot(data=district, aes(x=reorder(district,-Avg_rating), y= Avg_rating))+geom_
 ```
 *As the graph showing below, we can't tell significant diffence of rating among different neighborhoods. But we can see the average rating varys by district. Leather District has highest average rating which is close to 5. So neighborhood of the Airbnb room could be an influence predictor. We might want to include this predictor in the model to see whether rating is a significant for predicting price of rooms.*
 
-Average rating and price with different room types.
+*Average rating and price with different room types:*
+
 ```{r echo=FALSE}
 room_type <- sqldf("SELECT room_type, count(room_id), Avg(overall_satisfaction), avg(price) FROM BostonAirbnb Group by 1")
 colnames(room_type) = c("room_type","Num_room", "Avg_rating","Avg_price")
 ggplot(data = room_type, aes(x= reorder(room_type,-Avg_price),y = Avg_price)) + geom_bar(stat = "identity", fill = "sky blue") + ggtitle("Fig 5.Average price with different room types") + ylab("average price") + theme(axis.text.x = element_text(angle = 45, hjust = 1))
 ```
+
 *From the plot below, we can see entire home/Apt have highest average price among all types of room. This result is reasonable because entire home/apt have more space that can serve more people, so the price is higher.*
+
 ```{r echo=FALSE}
 ggplot(data = BostonAirbnb, aes(overall_satisfaction,fill = room_type)) + geom_bar(position  = "fill") + ggtitle("Fig 6. Average rating with different room types") + ylab("Percentage") + theme(axis.text.x = element_text(angle = 90, hjust = 1))
 ```
 *The plot showing above indicates the proportion of room types in different score of rating. We can tell from the graph that when overall satisfaction = 1 share room has relatively larger proportion compared situations when rating equal other values. However, we can't tell that "Entire home/apt" have higher proportion than other room type, because we found in previous EDA that the number of entire home/apt is higher than either private room or shared room.*
 
 
-The accommodates and bedrooms could be two correlated terms in the model, because the number of bedroom will limit the number of customers served. So the correlation test will be conducted in next step.
+*The accommodates and bedrooms could be two correlated terms in the model, because the number of bedroom will limit the number of customers served. So the correlation test will be conducted in next step.*
 
 ```{r echo=FALSE}
 res <- cor.test(BostonAirbnb$accommodates, BostonAirbnb$bedrooms, 
@@ -172,7 +176,8 @@ res
 *the p-value of this test is 2.2e-16. Reject the null hypothesis. So correlation between the those two variables is significant. we might want to add the correlation term into the model to test whether this influence term is significant*
 
 
-Before going further, we want to verify the distribution of the response variable--price, to test the assumption that it is normal distributed.
+*Before going further, we want to verify the distribution of the response variable--price, to test the assumption that it is normal distributed.*
+
 ```{r echo=FALSE}
 #create a histgram of the distribution of price from 0 to 700, since this range will be the majority of price fall in. 
 hist(BostonAirbnb$price, main = "Distribution of room price", xlab = "Price",breaks = 100,xlim = c(0,700))
@@ -182,6 +187,7 @@ df <- BostonAirbnb%>%
 hist(log(BostonAirbnb$price), main = "Fig 7.Distribution of room price", xlab = "Price", breaks = 40,xlim = c(2,8))
 #The distribution plot of transformed price  
 ```
+
 *The first histogram distribution plot obviously does not follow normal distribution. After doing the log transformation, we got the second histogram plot. Now it looks like it follows normal distribution.*
 
 ###Modelling:
@@ -278,5 +284,5 @@ ggplot(data = room_type, aes(x= reorder(room_type,-Avg_rating),y = Avg_rating)) 
 ggplot(data=district, aes(x=reorder(district,-Avg_price), y=Avg_price))+geom_bar(stat = "identity", fill = "sky blue")+
 ggtitle("Number of Airbnb Rooms per District")+ylab("Number of room")+ theme(axis.text.x = element_text(angle = 45, hjust = 1))
 plot(fitted(model2),resid(model2,type="pearson"),col="sky blue", main = "residual plot for model2")
-plot(fitted(model3),resid(model3,type="pearson"),col="sky blue", main = "residual plot for model2")
+plot(fitted(model3),resid(model3,type="pearson"),col="sky blue", main = "residual plot for model3")
 ```
