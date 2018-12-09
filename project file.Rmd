@@ -61,7 +61,7 @@ total = dplyr::bind_rows(data1,data2,data3, data4, data5, data6, data7, data8, d
  The data was extracted from http://tomslee.net, which can also be extracted from official Airbnb website. Specifically, the data was collected from the September 2014 to July 2017 in Boston area. There are 10 variales that will be used in this project. Specifically, they are room id, host, id room type, neighborhood, number of reviews, overall satisfaction(rating), number of accommodates, number of bedrooms and minimum stay for a visit those will be the potential factors to influence the pricing.
 ####overview of Airbnb data:
 Table 1. The head of the data:
-```{r}
+```{r echo=FALSE}
 kable(head(total[,c(1:3,5:7)]))
 ```
 
@@ -86,12 +86,12 @@ BostonAirbnb$room_id = as.character(BostonAirbnb$room_id)
 BostonAirbnb$host_id = as.character(BostonAirbnb$host_id)
 length(BostonAirbnb$price)
 # the size of cleaned observation is 25513
-summary(BostonAirbnb)#Now check the summary of data, There's no missing value in the data and the range of data is reasonable.
+#summary(BostonAirbnb)#Now check the summary of data, There's no missing value in the data and the range of data is reasonable.
 ```
 
 
 Table 3. Stat about the room type
-```{r}
+```{r echo=FALSE}
 #categorical data:
 kable(table(BostonAirbnb$room_type))
 ```
@@ -136,8 +136,9 @@ ggplot(data=district, aes(x=reorder(district,-reviews), y= reviews))+geom_bar(st
 
 
 Create a map with leaflet:
-Map 1. Boston area with each circle indicating the location of district 
+
 ```{r echo=FALSE}
+#Map 1. Boston area with each circle indicating the location of district 
   Boston_area_map <- leaflet(district) %>%
   addTiles() %>%
   addCircleMarkers(lng = district$lon,
@@ -197,19 +198,20 @@ $$log(price) =  \alpha + \beta_1 x_{room type} +\beta_2 x_{reviews} + \beta_3x_{
 ```{r echo=FALSE}
 #model1 simple linear regression:
 model1 = lm(logprice~ room_type + reviews + overall_satisfaction + accommodates*bedrooms + minstay-1, data = df) #We add "-1" to the regression formula to remove the constant term.
-summary(model1)
+#summary(model1)
 plot(model1,which =c(1,2))#create a residual plot and Q-Q plot.
 coefplot(model1,title = "Fig 8.Coefficient plot for model 1")
 ```
 *From this simple linear regression, I found all the predictors are significant. Also the R-square in the model is 0.57, So the model is not well fitted. However, in the residual plot, there are some points having big residual: 18772, 2680 and 2631. Those prices are very high that lead to huge residuals.The rest of points are symmetrically distributed around the line h = 0. In the QQ plot, we can see most dots in the middle falls on the line. However, the data have more extreme values on the tail of the distribution. So the model overestimates the low values and underestimate the high values.*
 
-*Though all the coefficients are significant in previous summary checking. The coefficient plot tell us the predictor: "reviews", "minstays" and correlation accommodates:bedrooms coefficient exactly fall on the zero point. We may want to eliminate those predictors in the multilevel models. Now let's expand simple linear model to multilevel linear model.
+*Though all the coefficients are significant in previous summary checking. The coefficient plot tell us the predictor: "reviews", "minstays" and correlation accommodates:bedrooms coefficient exactly fall on the zero point. We may want to eliminate those predictors in the multilevel models. Now let's expand simple linear model to multilevel linear model.*
+
 ####Model2: Multilevel linear model with random intercept:
 
 $$log(price) =  \alpha_{i} + \beta_1 x_{roomtype} +\beta_2 x_{overall satisfaction}  +\beta_3x_{accommodates*bedrooms} + \beta_4 x_{accommodates}+\beta_6 x_{bedrooms} $$
 ```{r echo=FALSE}
 model2 = lmer(logprice ~ room_type + overall_satisfaction + accommodates + bedrooms + (1|neighborhood)-1, data = df)
-display(model2)
+#display(model2)
 coefplot(model2, title = "Fig 9.Coefficient plot for model 2")
 ```
 *This model gets rid of a few non-significant terms we discussed previously such as interaction between accommodate and bedrooms. In the coefficient plot, all the predictors are significant. And the facotor of room type, room type plays the most important part in the model. Besides, the room types the number of bedrooms is the second influential term in this model*
@@ -219,7 +221,7 @@ coefplot(model2, title = "Fig 9.Coefficient plot for model 2")
 $$log(price) =  \alpha + \beta_1 x_{room_type} +\beta_{2[i]} x_{overallsatisfaction} + \beta_3 x_{accommodates}+\beta_4 x_{bedrooms}$$
 ```{r echo=FALSE}
 model3 = lmer(logprice ~ room_type + overall_satisfaction + accommodates + bedrooms + (0+ overall_satisfaction|neighborhood)-1, data = df)
-display(model3)
+#display(model3)
 coefplot(model3,title = "Fig 10.Coefficient plot for model 3")
 ```
 *This is a multilevel linear model with random slope. As we can see from the coefficient plot, all the predictors are significant.*
@@ -230,7 +232,7 @@ $$log(price) =  \alpha_{i} + \beta_1 x_{room_type} +\beta_{2[i]} x_{overall sati
 
 ```{r echo=FALSE}
 model4 = lmer(logprice ~ room_type + overall_satisfaction + bedrooms + accommodates + (1 + overall_satisfaction|neighborhood)-1, data = df)
-display(model4)
+#display(model4)
 coefplot(model4,title = "Fig 11.Coefficient plot for model 4")
 ```
 *This is the model is based on model2 and model3 with random slope as well random intercept. Again from the coefficient plot, all the predictors are significant.* 
@@ -248,39 +250,44 @@ abline(h =0)
 coef = coef(model4)$"neighborhood"
 max(coef$`(Intercept)`)
 ```
-*According to the output of the test, three models are highly different, because the p-value is less than 0.05. Also, we found that model 4 with random intercept and random slope is the best fit among three multilevel models. It has lowest deviance with 16293. The second plot is a residual plot form model 4. As we can see the plot is pois are symmetrically distributed around the line h = 0(you can check the rest of residual plots in the appendix). The neighborhood with the maximum intercept is bay village with intercept 0.7954577 *
+*According to the output of the test, three models are highly different, because the p-value is less than 0.05. Also, we found that model 4 with random intercept and random slope is the best fit among three multilevel models. It has lowest deviance with 16293. The second plot is a residual plot form model 4. As we can see the plot is pois are symmetrically distributed around the line h = 0(you can check the rest of residual plots in the appendix). The neighborhood with the maximum intercept is bay village with intercept 0.7954577*
 
 From the analysis above we found the best model among is the follow one:
+
  $$log(price) =  \alpha_{i} + \beta_1 x_{room_type} +\beta_{2[i]} x_{overall satisfaction}   + \beta_3 x_{accommodates}+\beta_4 x_{bedrooms} $$
-*The strategy of this model is predicting models by different levels of neighborhood. The model in each level will contain a unique intercept and a unique slope for the predictor overall satisfaction. This structure of will lead this model to minimize the deviance comparing to the other two multilevel linear model. From the coefficient plot, the most influential term is the factor of room type. The second influential term is the district of neighborhood. Also, more bedrooms and higher overall satisfaction will lead to a higher price.
+ 
+*The strategy of this model is predicting models by different levels of neighborhood. The model in each level will contain a unique intercept and a unique slope for the predictor overall satisfaction. This structure of will lead this model to minimize the deviance comparing to the other two multilevel linear model. From the coefficient plot, the most influential term is the factor of room type. The second influential term is the district of neighborhood. Also, more bedrooms and higher overall satisfaction will lead to a higher price.*
  
 
 
 ##V. Discussion:
 
 ###Implication
-The result of modeling is what we expected at initial. The factor of room type will determine the number of customers served. For example, entire home/apt tends to serve more people at one time. So the price of entire home/apt should be higher than the other two room type. Also, the second term neighborhood is obvious to be significant. This is because different districts have different environment condition. For example, Bay village is close to downtown area and there are many sight-seeing spots for tourists. We can conclude that our findings are reasonable. 
+*The result of modeling is what we expected at initial. The factor of room type will determine the number of customers served. For example, entire home/apt tends to serve more people at one time. So the price of entire home/apt should be higher than the other two room type. Also, the second term neighborhood is obvious to be significant. This is because different districts have different environment condition. For example, Bay village is close to downtown area and there are many sight-seeing spots for tourists. We can conclude that our findings are reasonable. *
 
 ###Limitation
-First, the dataset is limited in the Boston area. So, it is not enough to predict the Airbnb room price in other area. Second, there are only 4 predictors in the multilevel model. Those predictors are the most significant variables we found in the dataset. However, there are many other factors that may influence the price of rooms. For example, the crime rate in the neighborhood or the transportation condition. Those could be potential influence terms.
+*First, the dataset is limited in the Boston area. So, it is not enough to predict the Airbnb room price in other area. Second, there are only 4 predictors in the multilevel model. Those predictors are the most significant variables we found in the dataset. However, there are many other factors that may influence the price of rooms. For example, the crime rate in the neighborhood or the transportation condition. Those could be potential influence terms.*
 
 ###Future direction
-In the future, I will try to include more predictors with a bigger dataset. This will help predict the price more precisely and find more factors that influence the room price.
+*In the future, I will try to include more predictors with a bigger dataset. This will help predict the price more precisely and find more factors that influence the room price.*
 
 ##VI. Acknowledgement
-Special thanks to Professor Yajima's suggestion on model fitting and solutions to the problem "do not converge" when I was fitting a multilevel model. And thank the data provider on tomslee's website.
+*Special thanks to Professor Yajima's suggestion on model fitting and solutions to the problem "do not converge" when I was fitting a multilevel model. And thank the data provider on tomslee's website.*
 
 ##VII.Reference
+
 http://tomslee.net
+
 https://en.wikipedia.org/wiki/Airbnb
+
 https://www.airbnb.com/
 
 ##VIII. Appendix
 ```{r echo=FALSE}
 ggplot(data = room_type, aes(x= reorder(room_type,-Avg_rating),y = Avg_rating)) + geom_bar(stat = "identity", fill = "sky blue") + ggtitle("Average rating with different room types") + ylab("average rating") + theme(axis.text.x = element_text(angle = 45, hjust = 1))
 ```
-* The graph above shows the average rating with different room types. However we can't tell any difference among those three types. This is because the overall rating in Boston area are all very hight(above 4.5).*
-```{r echo=FALSE}
+*The graph above shows the average rating with different room types. However we can't tell any difference among those three types. This is because the overall rating in Boston area are all very hight(above 4.5).*
+```{r eval=FALSE, include=FALSE}
 ggplot(data=district, aes(x=reorder(district,-Avg_price), y=Avg_price))+geom_bar(stat = "identity", fill = "sky blue")+
 ggtitle("Number of Airbnb Rooms per District")+ylab("Number of room")+ theme(axis.text.x = element_text(angle = 45, hjust = 1))
 plot(fitted(model2),resid(model2,type="pearson"),col="sky blue", main = "residual plot for model2")
